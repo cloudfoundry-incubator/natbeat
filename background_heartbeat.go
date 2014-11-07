@@ -25,7 +25,7 @@ func NewBackgroundHeartbeat(natsAddress, natsUsername, natsPassword string, logg
 	}
 }
 
-func newBackgroundGroup(natsAddress, natsUsername, natsPassword string, logger lager.Logger, registration RegistryMessage) grouper.StaticGroup {
+func newBackgroundGroup(natsAddress, natsUsername, natsPassword string, logger lager.Logger, registration RegistryMessage) ifrit.Runner {
 	client := diegonats.NewClient()
 	return grouper.NewOrdered(os.Interrupt, grouper.Members{
 		{"nats_connection", diegonats.NewClientRunner(natsAddress, natsUsername, natsPassword, logger, client)},
