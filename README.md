@@ -26,7 +26,11 @@ process := ifrit.Invoke(heartbeater)
 
 // do your thing....
 
-// signal the heartbeater to unregister and exit once you are done
+// signal the heartbeater with `os.Interrupt` to unregister and exit once you are done
+process.Signal(os.Interrupt)
+err := <-process.Wait()
+
+// alternatively, signal with `os.Kill` to stop heartbeating immediately without unregistering
 process.Signal(os.Kill)
 err := <-process.Wait()
 ```
