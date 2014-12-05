@@ -18,8 +18,11 @@ registration := natsbeat.RegistryMessage{
    Port: 80,
 }
 
+// create a NATS client
+natsClient := diegonats.NewClient()
+
 // create a heartbeater that will restart itself whenever the nats connection is lost
-heartbeater := natsbeat.NewBackgroundHeartBeat(natsAddresses, natsUsername, natsPassword, logger, registration)
+heartbeater := natsbeat.NewBackgroundHeartBeat(natsClient, natsAddresses, natsUsername, natsPassword, logger, registration)
 
 // begin heartbeating in the background
 process := ifrit.Invoke(heartbeater)

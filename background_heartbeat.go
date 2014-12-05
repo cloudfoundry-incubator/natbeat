@@ -11,12 +11,12 @@ import (
 	"github.com/tedsuo/ifrit/restart"
 )
 
-func NewBackgroundHeartbeat(natsAddress, natsUsername, natsPassword string, logger lager.Logger, registration RegistryMessage) ifrit.RunFunc {
+func NewBackgroundHeartbeat(natsClient *diegonats.NATSClient, natsAddress, natsUsername, natsPassword string, logger lager.Logger, registration RegistryMessage) ifrit.RunFunc {
 	return func(signals <-chan os.Signal, ready chan<- struct{}) error {
 		restarter := restart.Restarter{
-			Runner: newBackgroundGroup(natsAddress, natsUsername, natsPassword, logger, registration),
+			Runner: newBackgroundGroup(natsClient, natsAddress, natsUsername, natsPassword, logger, registration),
 			Load: func(runner ifrit.Runner, err error) ifrit.Runner {
-				return newBackgroundGroup(natsAddress, natsUsername, natsPassword, logger, registration)
+				return newBackgroundGroup(natsClient, natsAddress, natsUsername, natsPassword, logger, registration)
 			},
 		}
 		// don't wait, start this thing in the background
@@ -25,10 +25,9 @@ func NewBackgroundHeartbeat(natsAddress, natsUsername, natsPassword string, logg
 	}
 }
 
-func newBackgroundGroup(natsAddress, natsUsername, natsPassword string, logger lager.Logger, registration RegistryMessage) ifrit.Runner {
-	client := diegonats.NewClient()
+func newBackgroundGroup(natsClient *diegonats.NATSClient, natsAddress, natsUsername, natsPassword string, logger lager.Logger, registration RegistryMessage) ifrit.Runner {
 	return grouper.NewOrdered(os.Interrupt, grouper.Members{
-		{"nats_connection", diegonats.NewClientRunner(natsAddress, natsUsername, natsPassword, logger, client)},
+		{"nats_connection", diegonats.NewClientRunner(natsAddress, natsUsername, natsPassword, logger, natsClient)},
 		{"router_heartbeat", New(client, registration, 50*time.Millisecond, logger)},
 	})
 }
