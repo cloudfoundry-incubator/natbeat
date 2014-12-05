@@ -11,7 +11,7 @@ import (
 	"github.com/tedsuo/ifrit/restart"
 )
 
-func NewBackgroundHeartbeat(natsClient *diegonats.NATSClient, natsAddress, natsUsername, natsPassword string, logger lager.Logger, registration RegistryMessage) ifrit.RunFunc {
+func NewBackgroundHeartbeat(natsClient diegonats.NATSClient, natsAddress, natsUsername, natsPassword string, logger lager.Logger, registration RegistryMessage) ifrit.RunFunc {
 	return func(signals <-chan os.Signal, ready chan<- struct{}) error {
 		restarter := restart.Restarter{
 			Runner: newBackgroundGroup(natsClient, natsAddress, natsUsername, natsPassword, logger, registration),
@@ -25,7 +25,7 @@ func NewBackgroundHeartbeat(natsClient *diegonats.NATSClient, natsAddress, natsU
 	}
 }
 
-func newBackgroundGroup(natsClient *diegonats.NATSClient, natsAddress, natsUsername, natsPassword string, logger lager.Logger, registration RegistryMessage) ifrit.Runner {
+func newBackgroundGroup(natsClient diegonats.NATSClient, natsAddress, natsUsername, natsPassword string, logger lager.Logger, registration RegistryMessage) ifrit.Runner {
 	return grouper.NewOrdered(os.Interrupt, grouper.Members{
 		{"nats_connection", diegonats.NewClientRunner(natsAddress, natsUsername, natsPassword, logger, natsClient)},
 		{"router_heartbeat", New(client, registration, 50*time.Millisecond, logger)},
