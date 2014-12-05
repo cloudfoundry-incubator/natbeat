@@ -28,6 +28,6 @@ func NewBackgroundHeartbeat(natsClient diegonats.NATSClient, natsAddress, natsUs
 func newBackgroundGroup(natsClient diegonats.NATSClient, natsAddress, natsUsername, natsPassword string, logger lager.Logger, registration RegistryMessage) ifrit.Runner {
 	return grouper.NewOrdered(os.Interrupt, grouper.Members{
 		{"nats_connection", diegonats.NewClientRunner(natsAddress, natsUsername, natsPassword, logger, natsClient)},
-		{"router_heartbeat", New(client, registration, 50*time.Millisecond, logger)},
+		{"router_heartbeat", New(natsClient, registration, 50*time.Millisecond, logger)},
 	})
 }
