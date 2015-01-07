@@ -55,6 +55,7 @@ func (h Heartbeater) Run(signals <-chan os.Signal, ready chan<- struct{}) error 
 	heartbeatTimer := time.NewTicker(h.initialInterval)
 
 	close(ready)
+	h.logger.Info("started")
 
 	for {
 		select {
