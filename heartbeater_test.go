@@ -111,7 +111,7 @@ func testHeartbeatsOnTime(
 
 		Consistently(registrations, expectedInterval-marginOfError).ShouldNot(Receive())
 		Eventually(registrations, marginOfError*2).Should(Receive(&msg))
-		Ω(msg).Should(Equal(expectedRegistryMsg))
+		Expect(msg).To(Equal(expectedRegistryMsg))
 
 		By(fmt.Sprint("Registration ", i, " of ", numHeartbeats, " received"))
 	}
@@ -119,11 +119,11 @@ func testHeartbeatsOnTime(
 
 func toJson(obj interface{}) []byte {
 	jsonBytes, err := json.Marshal(obj)
-	Ω(err).ShouldNot(HaveOccurred())
+	Expect(err).NotTo(HaveOccurred())
 	return jsonBytes
 }
 
 func fromJson(jsonBytes []byte, obj interface{}) {
 	err := json.Unmarshal(jsonBytes, obj)
-	Ω(err).ShouldNot(HaveOccurred())
+	Expect(err).NotTo(HaveOccurred())
 }
