@@ -43,6 +43,7 @@ var _ = Describe("Heartbeater", func() {
 
 	JustBeforeEach(func() {
 		heartbeaterProcess = ifrit.Invoke(heartbeater)
+		Eventually(heartbeaterProcess.Ready()).Should(BeClosed())
 	})
 
 	AfterEach(func() {

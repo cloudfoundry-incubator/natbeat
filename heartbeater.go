@@ -60,6 +60,7 @@ func (h Heartbeater) Run(signals <-chan os.Signal, ready chan<- struct{}) error 
 	for {
 		select {
 		case greeting := <-greetChan:
+			heartbeatTimer.Stop()
 			heartbeatTimer = time.NewTicker(greeting.RegisterInterval)
 
 		case <-heartbeatTimer.C:
