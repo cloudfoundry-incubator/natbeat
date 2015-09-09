@@ -26,6 +26,8 @@ var _ = Describe("Heartbeater", func() {
 		URIs: []string{"foo.bar.com", "example.com"},
 		Host: "1.2.3.4",
 		Port: 4567,
+		App: "my-awesome-app",
+		PrivateInstanceId: "deadbeef-c0ffee",
 	}
 
 	BeforeEach(func() {
