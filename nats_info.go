@@ -14,9 +14,11 @@ const (
 )
 
 type RegistryMessage struct {
-	URIs []string `json:"uris"`
-	Host string   `json:"host"`
-	Port int      `json:"port"`
+	URIs []string            `json:"uris"`
+	Host string              `json:"host"`
+	Port int                 `json:"port"`
+	App string               `json:"app"`
+	PrivateInstanceId string `json:"private_instance_id"`
 }
 
 type GreetingMessage struct {
